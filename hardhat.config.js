@@ -30,40 +30,10 @@ module.exports = {
   },
   networks: {
     goerli: {
-      url: "https://goerli.infura.io/v3/34c589330dc4487aad79d68d75d780c9",
+      url: process.env.URL,
       accounts: { mnemonic: process.env.mnemonic },
       allowUnlimitedContractSize: true,
       gas: 2100000
-    },
-    platon_dev: {
-        url: "https://devnet2openapi.platon.network/rpc",
-        accounts: [process.env.platon_pri],
-        gas: 2100000,
-        gasPrice: 8000000000
-    },
-    platon_qa: {
-        url: "https://devnet2openapi.platon.network/rpc",
-        accounts: [process.env.platon_pri],
-        gas: 2100000,
-        gasPrice: 8000000000
-    },
-    platon_stg: {
-        url: "https://devnet2openapi.platon.network/rpc",
-        accounts: [process.env.platon_pri],
-        gas: 2100000,
-        gasPrice: 8000000000
-    },
-    baobab_qa: {
-      url : "https://api.baobab.klaytn.net:8651",
-      accounts: [process.env.baobab_pri],
-      gas: 2100000,
-      gasPrice: 50000000000,
-    },
-    baobab_stg: {
-      url : "https://api.baobab.klaytn.net:8651",
-      accounts: [process.env.baobab_pri],
-      gas: 2100000,
-      gasPrice: 50000000000,
     },
   },
   paths: {
@@ -76,17 +46,6 @@ module.exports = {
     apiKey: {
       goerli: process.env.etherscan_api_key,
       rinkeby: process.env.etherscan_api_key,
-    }
-  },
-  mocha: {
-    timeout: 40000
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
-    },
-    admin: {
-      default:"0xb734178FF124957aB4933AC750C0dBf455A08cbC",
     }
   },
 };
