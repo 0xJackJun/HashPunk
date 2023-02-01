@@ -32,12 +32,10 @@ contract HValue is ERC1155Supply, Ownable {
     string  private _baseMetadataURI;
 
     constructor(
-        string memory _uri,
-        IHashPunk _hashPunk
+        string memory _uri
     ) ERC1155("") {
         name = "HValue";
         symbol = "HV";
-        hashPunk = _hashPunk;
         setBaseUri(_uri);
         currentTimeStamp = block.timestamp;
     }
@@ -127,6 +125,10 @@ contract HValue is ERC1155Supply, Ownable {
         currentTimeStamp = block.timestamp;
     }
 
+    function setHashPunk(IHashPunk _hashPunk) public onlyOwner {
+        hashPunk = _hashPunk;
+    }
+    
     function setBaseUri(string memory baseUri) public onlyOwner {
         _baseMetadataURI = baseUri;
     }

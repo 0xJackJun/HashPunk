@@ -7,9 +7,14 @@
 const hre = require("hardhat");
 
 async function main() {
+  const accounts = await hre.ethers.getSigners();
+  console.log(accounts[0].address);
+  //get eth balance of accounts[0]
+  const balance = await accounts[0].getBalance();
+  console.log(balance.toString());
   const HValue = await hre.ethers.getContractFactory("HValue");
   const hValue = await HValue.deploy("");
-
+  
   await hValue.deployed();
 
   console.log(
@@ -20,6 +25,12 @@ async function main() {
   const hashPunk = await HashPunk.deploy("", hValue.address, 50, 5);
   await hashPunk.deployed();
   console.log(`HashPunk deployed to ${hashPunk.address}`);
+
+  const tx = await hValue.setHashPunk(hashPunk.address);
+  console.log(tx);
+  const receipt = await tx.wait();
+  console.log(typeof(receipt));
+  console.log(receipt);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
