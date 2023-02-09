@@ -21,13 +21,15 @@ contract HValue is ERC1155Supply, Ownable {
     address   public          controller;
     IHashPunk public          hashPunk;
     uint256   public          currentTimeStamp;
+    uint256   public constant passId           = 1;
     uint256   public constant Hpoint           = 2;
-    uint256   public constant voucher          = 3;  
+    uint256   public constant voucher          = 3;
     uint256   public constant luckyStart       = 1000;
     uint256   public constant luckyEnd         = 1600;
     uint256   public constant exchangeLimit    = 3;
 
     mapping(address => uint256) public exchangeTimes;
+    mapping(address => uint256) public negtiveValue;
 
     string  private _baseMetadataURI;
 
@@ -60,10 +62,12 @@ contract HValue is ERC1155Supply, Ownable {
         address[] memory to,
         uint256[] memory tokenIds,
         uint256[] memory amounts,
+        uint256[] memory negtiveValues,
         bytes memory data
     ) public onlyOwner {
         for (uint256 i = 0; i < to.length; i++) {
             _mintBatch(to[i], tokenIds, amounts, data);
+            negtiveValue[to[i]] = negtiveValues[i];
         }
     }
 

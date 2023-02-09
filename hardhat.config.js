@@ -31,7 +31,7 @@ module.exports = {
   networks: {
     goerli: {
       url: process.env.URL,
-      accounts: { mnemonic: process.env.mnemonic },
+      accounts: [process.env.goerli_pri],
       allowUnlimitedContractSize: true,
       gas: 2100000
     },

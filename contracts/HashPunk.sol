@@ -31,6 +31,8 @@ interface IHValue {
         uint256 amount,
         bytes memory data
     ) external;
+
+    function negtiveValue(address _address) external view returns (uint256);
 }
 
 contract HashPunk is ERC721r, Ownable {
@@ -66,7 +68,7 @@ contract HashPunk is ERC721r, Ownable {
             hValue.mint(to, voucher, 1, "");
             return;
         }
-        require(hValue.balanceOf(msg.sender, Hpoint) >= base * amount, "insufficient HValue balance");
+        require(hValue.balanceOf(msg.sender, Hpoint) - hValue.negtiveValue(msg.sender) >= base * amount, "insufficient HValue balance");
         hValue.burn(msg.sender, Hpoint, base * amount);
         _mintRandom(to, amount);
         hValue.mint(to, voucher, 1, "");
