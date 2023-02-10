@@ -58,20 +58,20 @@ contract HashPunk is ERC721r, Ownable {
         _baseMetadataURI = _uri;
     }
 
-    function mint(address to, uint256 id, uint256 amount) public {
+    function mint(uint256 id, uint256 amount) public {
         require(tx.origin == msg.sender, "");
         require(id == passId || id == Hpoint, "invalid id");
         if (id == passId) {
             require(hValue.balanceOf(msg.sender, passId) >= passIdBase * amount, "insufficient Pass Card balance");
             hValue.burn(msg.sender, passId, passIdBase * amount);
-            _mintRandom(to, amount);
-            hValue.mint(to, voucher, 1, "");
+            _mintRandom(msg.sender, amount);
+            hValue.mint(msg.sender, voucher, 1, "");
             return;
         }
         require(hValue.balanceOf(msg.sender, Hpoint) - hValue.negtiveValue(msg.sender) >= base * amount, "insufficient HValue balance");
         hValue.burn(msg.sender, Hpoint, base * amount);
-        _mintRandom(to, amount);
-        hValue.mint(to, voucher, 1, "");
+        _mintRandom(msg.sender, amount);
+        hValue.mint(msg.sender, voucher, 1, "");
     }
 
     /**
