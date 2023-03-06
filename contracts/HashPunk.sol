@@ -1,61 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./ERC721r.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./ERC721rUpgradeable.sol";
+import "./HashPunkStorage.sol";
 
-interface IHValue {
+contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
 
-    function balanceOf(address account, uint256 id)
-        external
-        view
-        returns (uint256);
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes calldata data
-    ) external;
-
-    function burn(
-        address from,
-        uint256 tokenId,
-        uint256 amount
-    ) external;
-
-    function mint(
-        address to,
-        uint256 tokenId,
-        uint256 amount,
-        bytes memory data
-    ) external;
-
-    function negtiveValue(address _address) external view returns (uint256);
-}
-
-contract HashPunk is ERC721r, Ownable {
-
-    uint256 public constant passId  = 1;
-    uint256 public constant Hpoint  = 2;
-    uint256 public constant voucher = 3;
-    uint256 public          passIdBase;
-    uint256 public          base;
-    IHValue public          hValue;
-    
-    string  private         _baseMetadataURI;
-
-    constructor(
+    function initialize(
         string memory _uri,
         address _hValue,
         uint256 _base,
         uint256 _passIdBase
-    ) ERC721r("HashPunk", "HP", 3000) {
+    ) public initializer {
+        __ERC721r_init("HashPunk", "HP", 5000);
         passIdBase = _passIdBase;
         base = _base;
         hValue = IHValue(_hValue);
-        _baseMetadataURI = _uri;
+        baseMetadataURI = _uri;
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(
+            msg.sender == owner,
+            "HashPunk: caller is not the owner"
+        );
+        _;
     }
 
     function mint(uint256 id, uint256 amount) public {
@@ -78,7 +48,7 @@ contract HashPunk is ERC721r, Ownable {
      * Sets a new baseURI for NFT.
      */
     function setBaseUri(string memory baseUri) external onlyOwner {
-        _baseMetadataURI = baseUri;
+        baseMetadataURI = baseUri;
     }
 
     /**
@@ -91,7 +61,7 @@ contract HashPunk is ERC721r, Ownable {
         override
         returns (string memory)
     {
-        return string(abi.encodePacked(_baseMetadataURI, _uint2str(tokenId)));
+        return string(abi.encodePacked(baseMetadataURI, _uint2str(tokenId)));
     }
 
     function setPassIdBase(uint256 _passIdBase) public onlyOwner {
@@ -133,7 +103,7 @@ contract HashPunk is ERC721r, Ownable {
         if(msg.sender == address(hValue)) {
             return true;
         }
-        address owner = ERC721r.ownerOf(tokenId);
+        address owner = ERC721rUpgradeable.ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }
 }

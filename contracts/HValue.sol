@@ -1,47 +1,31 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./HValueStorage.sol";
 
-interface IHashPunk {
-    function ownerOf(uint256 tokenId) external view returns (address owner);
+contract HValue is ERC1155SupplyUpgradeable, HValueStorage {
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) external;
-}
-
-contract HValue is ERC1155Supply, Ownable {
-
-    string    public          name;
-    string    public          symbol;
-    address   public          controller;
-    IHashPunk public          hashPunk;
-    uint256   public          currentTimeStamp;
-    uint256   public constant passId           = 1;
-    uint256   public constant Hpoint           = 2;
-    uint256   public constant voucher          = 3;
-    uint256   public constant luckyStart       = 1000;
-    uint256   public constant luckyEnd         = 1600;
-    uint256   public constant exchangeLimit    = 3;
-
-    mapping(address => uint256) public exchangeTimes;
-    mapping(address => uint256) public negtiveValue;
-
-    string  private _baseMetadataURI;
-
-    constructor(
+    function initialize(
         string memory _uri
-    ) ERC1155("") {
+    ) public initializer {
+        __ERC1155Supply_init();
         name = "HValue";
         symbol = "HV";
         setBaseUri(_uri);
+        owner = msg.sender;
         currentTimeStamp = block.timestamp;
     }
 
+    modifier onlyOwner() {
+        require(
+            msg.sender == owner,
+            "HValue: caller is not the owner"
+        );
+        _;
+    }
+    
     modifier onlyController() {
         require(
             msg.sender == controller,
@@ -134,7 +118,7 @@ contract HValue is ERC1155Supply, Ownable {
     }
     
     function setBaseUri(string memory baseUri) public onlyOwner {
-        _baseMetadataURI = baseUri;
+        baseMetadataURI = baseUri;
     }
 
     function setController(address _controller) public onlyOwner {
@@ -142,7 +126,19 @@ contract HValue is ERC1155Supply, Ownable {
     }
     
     function uri(uint256 tokenId) public view override returns (string memory) {
-        return string(abi.encodePacked(_baseMetadataURI, _uint2str(tokenId)));
+        return string(abi.encodePacked(baseMetadataURI, _uint2str(tokenId)));
+    }
+
+    function rareAddress() public view returns (address[] memory) {
+        address[] memory res = new address[](luckyEnd - luckyStart + 1);
+        for (uint i = luckyStart; i <= luckyEnd; i++) {
+            res[i - 1] = hashPunk.ownerOf(i);
+        }
+        return res;
+    }
+
+    function isRare(uint256 tokenId) public view returns (bool) {
+        return tokenId >= luckyStart && tokenId <= luckyEnd;
     }
 
     function _uint2str(uint256 _i) internal pure returns (string memory) {

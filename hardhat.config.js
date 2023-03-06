@@ -1,4 +1,5 @@
 require('dotenv').config();
+require("hardhat-deploy");
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 /**
@@ -46,6 +47,14 @@ module.exports = {
     apiKey: {
       goerli: process.env.etherscan_api_key,
       rinkeby: process.env.etherscan_api_key,
+    }
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+    },
+    admin: {
+      default:"0xb734178FF124957aB4933AC750C0dBf455A08cbC",
     }
   },
 };
