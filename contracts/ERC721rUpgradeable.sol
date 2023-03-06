@@ -260,7 +260,7 @@ contract ERC721rUpgradeable is ContextUpgradeable, ERC165Upgradeable, IERC721Upg
         _afterTokenTransfer(address(0), to, tokenId);
     }
 
-    function _mintRandom(address to, uint _numToMint) internal virtual {
+    function _mintRandom(address to, uint _numToMint) internal virtual returns(uint[] memory){
         require(_msgSender() == tx.origin, "Contracts cannot mint");
         require(to != address(0), "ERC721: mint to the zero address");
         require(_numToMint > 0, "ERC721r: need to mint at least one token");
@@ -269,9 +269,10 @@ contract ERC721rUpgradeable is ContextUpgradeable, ERC165Upgradeable, IERC721Upg
         require(_numAvailableTokens >= _numToMint, "ERC721r: minting more tokens than available");
         
         uint updatedNumAvailableTokens = _numAvailableTokens;
+        uint[] memory res = new uint[](_numToMint);
         for (uint256 i; i < _numToMint; ++i) { // Do this ++ unchecked?
             uint256 tokenId = getRandomAvailableTokenId(to, updatedNumAvailableTokens);
-            
+            res[i] = tokenId;
             _mintIdWithoutBalanceUpdate(to, tokenId);
             
             --updatedNumAvailableTokens;
@@ -279,6 +280,7 @@ contract ERC721rUpgradeable is ContextUpgradeable, ERC165Upgradeable, IERC721Upg
         
         _numAvailableTokens = updatedNumAvailableTokens;
         _balances[to] += _numToMint;
+        return res;
     }
         
     function getRandomAvailableTokenId(address to, uint updatedNumAvailableTokens)

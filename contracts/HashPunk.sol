@@ -12,7 +12,7 @@ contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
         uint256 _base,
         uint256 _passIdBase
     ) public initializer {
-        __ERC721r_init("HashPunk", "HP", 5000);
+        __ERC721r_init("HashPunk", "HP", 3000);
         passIdBase = _passIdBase;
         base = _base;
         hValue = IHValue(_hValue);
@@ -40,7 +40,12 @@ contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
         }
         require(hValue.balanceOf(msg.sender, Hpoint) - hValue.negtiveValue(msg.sender) >= base * amount, "insufficient HValue balance");
         hValue.burn(msg.sender, Hpoint, base * amount);
-        _mintRandom(msg.sender, amount);
+        uint[] memory tokenIds = _mintRandom(msg.sender, amount);
+        for(uint i = 0; i < tokenIds.length; i++) {
+            if(tokenIds[i]>=luckyStart && tokenIds[i]<=luckyEnd) {
+               userToRareIds[msg.sender].push(tokenIds[i]);
+            }
+        }
         hValue.mint(msg.sender, voucher, 1, "");
     }
 

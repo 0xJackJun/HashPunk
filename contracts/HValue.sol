@@ -129,18 +129,6 @@ contract HValue is ERC1155SupplyUpgradeable, HValueStorage {
         return string(abi.encodePacked(baseMetadataURI, _uint2str(tokenId)));
     }
 
-    function rareAddress() public view returns (address[] memory) {
-        address[] memory res = new address[](luckyEnd - luckyStart + 1);
-        for (uint i = luckyStart; i <= luckyEnd; i++) {
-            res[i - 1] = hashPunk.ownerOf(i);
-        }
-        return res;
-    }
-
-    function isRare(uint256 tokenId) public view returns (bool) {
-        return tokenId >= luckyStart && tokenId <= luckyEnd;
-    }
-
     function _uint2str(uint256 _i) internal pure returns (string memory) {
         if (_i == 0) {
             return "0";

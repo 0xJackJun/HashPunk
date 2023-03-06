@@ -8,7 +8,7 @@ module.exports = async ({
     const {deployer,admin} = await getNamedAccounts();
     logic = await deployments.get(HValue_CONTRACT)
 
-    await deploy('EternalHValueProxy', {
+    await deploy('ExternalHValueProxy', {
       from: deployer,
       args: [logic.address,admin,"0x"],
       log: true,

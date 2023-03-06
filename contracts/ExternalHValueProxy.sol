@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 /// @title A proxy contract for did
-contract EternalHValueProxy is TransparentUpgradeableProxy {
+contract ExternalHValueProxy is TransparentUpgradeableProxy {
     constructor(
         address _logic,
         address admin_,

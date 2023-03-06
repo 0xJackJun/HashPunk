@@ -23,7 +23,7 @@ contract HValueStorage {
     uint256   public          Hpoint           = 2;
     uint256   public          voucher          = 3;
     uint256   public          luckyStart       = 1;
-    uint256   public          luckyEnd         = 30;
+    uint256   public          luckyEnd         = 500;
     uint256   public          exchangeLimit    = 3;
 
     mapping(address => uint256) public exchangeTimes;

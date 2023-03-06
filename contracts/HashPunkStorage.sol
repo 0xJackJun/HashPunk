@@ -41,4 +41,7 @@ contract HashPunkStorage {
     IHValue public          hValue;
     address public          owner;
     string  public          baseMetadataURI;
+    uint256 public          luckyStart       = 1;
+    uint256 public          luckyEnd         = 500;
+    mapping(address => uint[]) public userToRareIds;
 }
