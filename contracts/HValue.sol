@@ -13,7 +13,7 @@ contract HValue is ERC1155SupplyUpgradeable, HValueStorage {
         __ERC1155Supply_init();
         name = "HValue";
         symbol = "HV";
-        setBaseUri(_uri);
+        baseMetadataURI = _uri;
         owner = msg.sender;
         currentTimeStamp = block.timestamp;
     }

@@ -35,7 +35,7 @@ contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
             require(hValue.balanceOf(msg.sender, passId) >= passIdBase * amount, "insufficient Pass Card balance");
             hValue.burn(msg.sender, passId, passIdBase * amount);
             _mintRandom(msg.sender, amount);
-            hValue.mint(msg.sender, voucher, 1, "");
+            hValue.mint(msg.sender, voucher, amount, "");
             return;
         }
         require(hValue.balanceOf(msg.sender, Hpoint) - hValue.negtiveValue(msg.sender) >= base * amount, "insufficient HValue balance");
@@ -110,5 +110,25 @@ contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
         }
         address owner = ERC721rUpgradeable.ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
+    }
+
+    function getUserToRareIds(address user) public view returns (uint[] memory) {
+        return userToRareIds[user];
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override {
+        if (from != address(0)) {
+            uint256 index = userToRareIds[from].length;
+            for (uint256 i = 0; i < index; i++) {
+                if (userToRareIds[from][i] == tokenId) {
+                    userToRareIds[to][i] = tokenId;
+                    userToRareIds[from][i] = userToRareIds[from][index - 1];
+                }
+            }
+        }
     }
 }
