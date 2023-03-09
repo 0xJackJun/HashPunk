@@ -46,7 +46,7 @@ contract HashPunk is ERC721rUpgradeable, HashPunkStorage {
                userToRareIds[msg.sender].push(tokenIds[i]);
             }
         }
-        hValue.mint(msg.sender, voucher, 1, "");
+        hValue.mint(msg.sender, voucher, amount, "");
     }
 
     /**
